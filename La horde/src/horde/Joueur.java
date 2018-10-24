@@ -8,8 +8,8 @@ public class Joueur {
   Case caseActuelle;
   
   public Joueur(String n, int pdv, int pa){
-    String n = this.nom;
-    int pdv = this.pointsDeVie;
-    int pa = this.pointsAction;
+    this.nom = n;
+    this.pointsDeVie = pdv;
+    this.pointsAction = pa;
   }
 }
