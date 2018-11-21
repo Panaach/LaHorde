@@ -69,7 +69,4 @@ public class Case {
 	public void setOrdonne(int ordonnée) {
 		this.ordonne = ordonnée;
 	}
-	
-	// Méthodes pour l'hdv
-
 }

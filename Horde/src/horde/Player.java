@@ -2,8 +2,6 @@ package horde;
 
 import java.util.HashSet;
 
-import horde.Grille.absisse;
-
 public class Player {
 	
 	private String abscisse;
@@ -14,6 +12,7 @@ public class Player {
 	private int pv;
 	private HashSet sac;
 	
+	// Constructeur
 	public Player(String pseudo, int indice) {
 		this.setPseudo(pseudo);
 		this.setPa(6);
@@ -22,7 +21,7 @@ public class Player {
 		this.setAbscisse("L");
 		this.setOrdonne(13);
 	}
-	
+	// Getters and Setters
 	public String getPseudo() {
 		return pseudo;
 	}
@@ -72,13 +71,62 @@ public class Player {
 	}
 	
 	public static void avancerDroite(Player p) {
-		// Aller a la lettre suivante
-		
-		//p.setAbscisse(String.valueOf(absisse.valueOf(p.getAbscisse())).next());
-		//int abs = Integer.parseUnsignedInt(String.valueOf((absisse.valueOf(p.getAbscisse()))));
-		String abs = String.valueOf(absisse.valueOf(p.getAbscisse()));
-		System.out.println(abs);
-		
+		if (p.getPa()>0) {
+			if (!p.getAbscisse().equals("y")) {
+				// parcours l'énumération afin de trouver la lettre correspondante et on la remplace par la suivante
+				// perds 1 PA
+				int i = 0;
+				while(!p.getAbscisse().equals(String.valueOf(Grille.absAlphabet.values()[i]))) {
+					i+=1;
+				}
+				p.setAbscisse(String.valueOf(Grille.absAlphabet.values()[i+1]));
+				p.setPa(p.getPa()-1);
+			} else
+				System.out.println("Vous ne pouvez pas vous déplacer à droite!");
+		} else
+			System.out.println("Vous ne possédez plus de PA!");
 	}
 
+	public static void avancerGauche(Player p) {
+		if (p.getPa()>0) {
+			if (!p.getAbscisse().equals("A")) {
+				// parcours l'énumération afin de trouver la lettre correspondante et on la remplace par la précédente
+				// perds 1 PA
+				int i = 0;
+				while(!p.getAbscisse().equals(String.valueOf(Grille.absAlphabet.values()[i]))) {
+					i+=1;
+				}
+				p.setAbscisse(String.valueOf(Grille.absAlphabet.values()[i-1]));
+				p.setPa(p.getPa()-1);
+			} else
+				System.out.println("Vous ne pouvez pas vous déplacer à gauche!");
+		} else
+			System.out.println("Vous ne possédez plus de PA!");
+	}
+	
+	public static void avancerHaut(Player p) {
+		if (p.getPa()>0) {
+			if (p.getOrdonne() != 1) {
+				// réduit de 1 l'ordonnée	
+				// perds 1 PA
+				p.setOrdonne(p.getOrdonne()-1);
+				p.setPa(p.getPa()-1);
+			} else
+				System.out.println("Vous ne pouvez pas vous déplacer vers le haut!");
+		} else
+			System.out.println("Vous ne possédez plus de PA!");
+	}
+	
+	public static void avancerBas(Player p) {
+		if (p.getPa()>0) {
+			if (p.getOrdonne() != 25) {
+				// augmente de 1 l'ordonnée	
+				// perds 1 PA
+				p.setOrdonne(p.getOrdonne()+1);
+				p.setPa(p.getPa()-1);
+			} else
+				System.out.println("Vous ne pouvez pas vous déplacer vers le bas!");
+		} else
+			System.out.println("Vous ne possédez plus de PA!");
+	}
 }

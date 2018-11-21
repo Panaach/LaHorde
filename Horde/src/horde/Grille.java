@@ -7,7 +7,7 @@ public class Grille {
 	// hdv au mileu
 	// 1000 planches 500 plaques de métal, 100 boissons énergisantes
 	
-	public enum absisse {
+	public enum absAlphabet {
 		  A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y;
 	}
 	
@@ -37,9 +37,9 @@ public class Grille {
 				int nbRandomZombies = (int) (Math.random() * tabZombies.size());
 				
 				if (i == 12 && j == 13)
-					grille.add(new HotelDeVille(String.valueOf(absisse.values()[i]), j));
+					grille.add(new HotelDeVille(String.valueOf(absAlphabet.values()[i]), j));
 				else				
-					grille.add(new Case(String.valueOf(absisse.values()[i]), j, tabZombies.get(nbRandomZombies), 0, 0));
+					grille.add(new Case(String.valueOf(absAlphabet.values()[i]), j, tabZombies.get(nbRandomZombies), 0, 0));
 			}
 		}
 		

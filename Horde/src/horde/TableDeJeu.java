@@ -21,9 +21,13 @@ public class TableDeJeu {
 			listPlayer.add(p);
 		}
 
-		LinkedList<Case> ok = grille.createGrille();
+		grille.createGrille();
+		
 		for (int i = 0 ; i < listPlayer.size(); i++) {
-			Player.avancerDroite(listPlayer.get(i));;
+			System.out.println("C'est à " + listPlayer.get(i).getPseudo() + " de jouer!");
+			
+			Player.avancerDroite(listPlayer.get(i));
+			System.out.println(listPlayer.get(i).getPa()+"/6 PA "+ listPlayer.get(i).getAbscisse());
 		}
 		
 		//grille.affiche(ok);
