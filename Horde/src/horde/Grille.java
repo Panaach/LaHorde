@@ -7,11 +7,11 @@ public class Grille {
 	// hdv au mileu
 	// 1000 planches 500 plaques de métal, 100 boissons énergisantes
 	
+	LinkedList<Case> grille = new LinkedList<>();
+	
 	public enum absAlphabet {
 		  A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y;
 	}
-	
-	LinkedList<Case> grille = new LinkedList<>();
 	
 	public ArrayList<Integer> tabZombies() {
 		ArrayList<Integer> nbZombies = new ArrayList<>();
@@ -46,7 +46,7 @@ public class Grille {
 		while (nbPlanches > 0) {
 
 			//int nbRandomPlanches = (int) (Math.random() * 20);
-			int nbPlanchesCase = 20;
+			int nbPlanchesCase = 10;
 			
 			int nbRandomCase = (int) (Math.random() * grille.size());
 			
@@ -54,7 +54,8 @@ public class Grille {
 				nbRandomCase = (int) (Math.random() * grille.size());
 			}
 			
-			grille.get(nbRandomCase).setNbPlanches(nbPlanchesCase);
+
+			grille.get(nbRandomCase).setNbPlanche(grille.get(nbRandomCase).getNbPlanche() + nbPlanchesCase);
 			
 			nbPlanches = nbPlanches - nbPlanchesCase;
 			
@@ -64,15 +65,15 @@ public class Grille {
 		while (nbMetals > 0) {
 
 			//int nbRandomMetals = (int) (Math.random() * 10);
-			int nbMetalsCase= 10;
+			int nbMetalsCase= 5;
 			
 			int nbRandomCase = (int) (Math.random() * grille.size());
 			
 			while(nbRandomCase == grille.size()/2) {
 				nbRandomCase = (int) (Math.random() * grille.size());
 			}
-
-			grille.get(nbRandomCase).setNbMetals(nbMetalsCase);
+			
+			grille.get(nbRandomCase).setNbMetal(grille.get(nbRandomCase).getNbPlanche() + nbMetalsCase);
 
 			nbMetals = nbMetals - nbMetalsCase;
 			
@@ -81,10 +82,20 @@ public class Grille {
 		
 		return grille;
 	}
-
+	
+	public static int numeroCaseDansLaListe(String abs, int ord) {
+		int numero = 0, i = 0;
+		while (String.valueOf(absAlphabet.values()[i]).equals(abs)) {
+			numero+=25;
+			i+=1;
+		}
+		numero += ord;
+		return numero;
+	}
+	
 	public void affiche(LinkedList<Case> grille) {
 		for(int i=0; i<grille.size();i++) {		
-			System.out.println(" met "+grille.get(i).getNbMetals() + " pl "+grille.get(i).getNbPlanches() + " zomb "+grille.get(i).getNbZombies());
+			System.out.println(" met "+grille.get(i).getNbMetal() + " pl "+grille.get(i).getNbPlanche() + " zomb "+grille.get(i).getNbZombies());
 		}
 	}
 }

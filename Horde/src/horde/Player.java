@@ -1,6 +1,7 @@
 package horde;
 
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.LinkedList;
 
 public class Player {
 	
@@ -10,7 +11,7 @@ public class Player {
 	private int indice;
 	private int pa;
 	private int pv;
-	private HashSet sac;
+	private ArrayList<ObjetJeu> sac = new ArrayList<>();
 	
 	// Constructeur
 	public Player(String pseudo, int indice) {
@@ -70,9 +71,17 @@ public class Player {
 		this.ordonne = ordonne;
 	}
 	
+	public ArrayList<ObjetJeu> getSac() {
+		return sac;
+	}
+	
+	public void setSac(ArrayList<ObjetJeu> sac) {
+		this.sac = sac;
+	}
+	
 	public static void avancerDroite(Player p) {
 		if (p.getPa()>0) {
-			if (!p.getAbscisse().equals("y")) {
+			if (!p.getAbscisse().equals("Y")) {
 				// parcours l'énumération afin de trouver la lettre correspondante et on la remplace par la suivante
 				// perds 1 PA
 				int i = 0;
@@ -128,5 +137,48 @@ public class Player {
 				System.out.println("Vous ne pouvez pas vous déplacer vers le bas!");
 		} else
 			System.out.println("Vous ne possédez plus de PA!");
+	}
+	
+	public void fouiller(Player p, LinkedList<Case> grilleDeJeu) {
+		Case caseActuelle = grilleDeJeu.get(Grille.numeroCaseDansLaListe(p.getAbscisse(), p.getOrdonne()));
+
+		if (!caseActuelle.getAbscisse().equals("L") || caseActuelle.getOrdonne() != 13) {
+			// Si mon sac n'est pas vide alors j'évite le nullPointerexeption
+			if (!p.getSac().isEmpty()) {
+				if (caseActuelle.getNbPlanche() != 0 || caseActuelle.getNbMetal() != 0) {
+					for (int i = p.getSac().size(); i < 10; i++) {
+
+						if (caseActuelle.getNbPlanche() != 0) {
+							p.getSac().add(new Planche());
+							caseActuelle.setNbPlanche(caseActuelle.getNbPlanche()-1);
+						} else if (caseActuelle.getNbMetal() != 0 ) {
+							p.getSac().add(new Metal());
+							caseActuelle.setNbPlanche(caseActuelle.getNbPlanche()-1);
+						}
+						
+					}
+				} else 
+					System.out.println("Il n'y a rien dans cette case!");				
+			} else {
+				// Si mon sac est vide alors (j'ai le nullPointerexeption) dans ma boucle for je peux commencer à 0
+				if (caseActuelle.getNbPlanche() != 0 || caseActuelle.getNbMetal() != 0) {
+					System.out.println("Vous avez trouvé " + caseActuelle.getNbPlanche() 
+										+ " planches et " + caseActuelle.getNbMetal() + " métals!");
+					for (int i = 0; i < 10; i++) {
+						
+						if (caseActuelle.getNbPlanche() != 0) {
+							p.getSac().add(new Planche());
+							caseActuelle.setNbPlanche(caseActuelle.getNbPlanche()-1);
+						} else if (caseActuelle.getNbMetal() != 0 ) {
+							p.getSac().add(new Metal());
+							caseActuelle.setNbPlanche(caseActuelle.getNbPlanche()-1);
+						}
+						
+					}
+				} else 
+					System.out.println("Il n'y a rien dans cette case!");
+			}
+		} else
+			System.out.println("Vous ne pouvez pas fouiller la ville!");
 	}
 }

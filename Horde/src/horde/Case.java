@@ -6,25 +6,22 @@ public class Case {
 	private String abscisse;
 	private int ordonne;
 	private int nbZombies;
-	private int nbPlanches; 
-	private int nbMetals;
+	private int nbPlanche; 
+	private int nbMetal;
 	//private int nbBoissons;
 	
 	public Case(String abscisse, int ordonne) {
 		this.setAbscisse(abscisse);
 		this.setOrdonne(ordonne);
-		this.setNbZombies(nbZombies);
-		this.setNbPlanches(nbPlanches);
-		this.setNbMetals(nbMetals);
 		//this.setNbBoissons(nbBoissons);
 	}
 	
-	public Case(String abscisse, int ordonne, int nbZombies, int nbPlanches, int nbMetals/*, int nbBoissons*/) {
+	public Case(String abscisse, int ordonne, int nbZombies, int nbPlanche, int nbMetal/*, int nbBoissons*/) {
 		this.setAbscisse(abscisse);
 		this.setOrdonne(ordonne);
 		this.setNbZombies(nbZombies);
-		this.setNbPlanches(nbPlanches);
-		this.setNbMetals(nbMetals);
+		this.setNbPlanche(nbPlanche);
+		this.setNbMetal(nbMetal);
 		//this.setNbBoissons(nbBoissons);
 	}
 	
@@ -36,20 +33,20 @@ public class Case {
 		this.nbZombies = nbZombies;
 	}
 
-	public int getNbPlanches() {
-		return nbPlanches;
+	public int getNbPlanche() {
+		return nbPlanche;
 	}
 
-	public void setNbPlanches(int nbPlanches) {
-		this.nbPlanches = nbPlanches;
+	public void setNbPlanche(int nbPlanches) {
+		this.nbPlanche = nbPlanches;
 	}
 
-	public int getNbMetals() {
-		return nbMetals;
+	public int getNbMetal() {
+		return nbMetal;
 	}
 
-	public void setNbMetals(int nbMetals) {
-		this.nbMetals = nbMetals;
+	public void setNbMetal(int nbMetal) {
+		this.nbMetal = nbMetal;
 	}
 
 	
