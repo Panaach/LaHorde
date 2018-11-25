@@ -81,6 +81,7 @@ public class Player {
 	
 	public static void avancerDroite(Player p) {
 		if (p.getPa()>0) {
+			System.out.println("Nombre de PA du joueur : " + p.getPa());
 			if (!p.getAbscisse().equals("Y")) {
 				// parcours l'énumération afin de trouver la lettre correspondante et on la remplace par la suivante
 				// perds 1 PA
@@ -98,6 +99,7 @@ public class Player {
 
 	public static void avancerGauche(Player p) {
 		if (p.getPa()>0) {
+			System.out.println("Nombre de PA du joueur : " + p.getPa());
 			if (!p.getAbscisse().equals("A")) {
 				// parcours l'énumération afin de trouver la lettre correspondante et on la remplace par la précédente
 				// perds 1 PA
@@ -115,6 +117,7 @@ public class Player {
 	
 	public static void avancerHaut(Player p) {
 		if (p.getPa()>0) {
+			System.out.println("Nombre de PA du joueur : " + p.getPa());
 			if (p.getOrdonne() != 1) {
 				// réduit de 1 l'ordonnée	
 				// perds 1 PA
@@ -128,6 +131,7 @@ public class Player {
 	
 	public static void avancerBas(Player p) {
 		if (p.getPa()>0) {
+			System.out.println("Nombre de PA du joueur : " + p.getPa());
 			if (p.getOrdonne() != 25) {
 				// augmente de 1 l'ordonnée	
 				// perds 1 PA
@@ -141,6 +145,8 @@ public class Player {
 	
 	public void fouiller(Player p, LinkedList<Case> grilleDeJeu) {
 		Case caseActuelle = grilleDeJeu.get(Grille.numeroCaseDansLaListe(p.getAbscisse(), p.getOrdonne()));
+		
+		System.out.println("Nombre de PA du joueur : " + p.getPa());
 
 		if (!caseActuelle.getAbscisse().equals("L") || caseActuelle.getOrdonne() != 13) {
 			// Si mon sac n'est pas vide alors j'évite le nullPointerexeption
@@ -180,5 +186,11 @@ public class Player {
 			}
 		} else
 			System.out.println("Vous ne pouvez pas fouiller la ville!");
+	}
+	
+	public void tuerUnZombie (Player p, LinkedList<Case> grilleDeJeu) {
+		p.setPa(p.getPa()-1);
+		Case caseAct = grilleDeJeu.get(Grille.numeroCaseDansLaListe(p.getAbscisse(), p.getOrdonne()));
+		caseAct.setNbZombies(caseAct.getNbZombies()-1);
 	}
 }
