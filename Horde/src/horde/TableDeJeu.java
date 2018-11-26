@@ -8,12 +8,17 @@ public class TableDeJeu {
 		
 		Grille grille = new Grille();
 		HotelDeVille hdv = new HotelDeVille("L", 13);
-		
 		int nbPlayer = 2;
 		LinkedList<Player> listPlayer = new LinkedList<>();
 
 		//Création de la grille de jeu
 		LinkedList<Case> grilleDeJeu = grille.createGrille();
+
+		// Récupération de l'hotel de ville depuis la grille
+		//hdv = (HotelDeVille) grilleDeJeu.get(Grille.numeroCaseDansLaListe("L", 13));
+		
+		// création de la banque dans la ville
+		hdv.createBanque();
 		
 		int code = -1;
 		
@@ -31,20 +36,18 @@ public class TableDeJeu {
 		for (int i = 0 ; i < listPlayer.size(); i++) {
 			Player p = listPlayer.get(i);
 			System.out.println("C'est à " + listPlayer.get(i).getPseudo() + " de jouer!");
+			
+			//System.out.println(p.getAbscisse() + " " + p.getOrdonne());
 
-			while (code != 1 || code > 2 || code > 3 || code > 9) {
-				@SuppressWarnings("resource")
-				Scanner sc = new Scanner(System.in);
-				System.out.println("\nQue Voulez vous faire?\n"
-						+ "Sortir de la ville : 1\n"
-						+ "Aller à la banque : 2\n"
-						+ "Aller au puit : 3\n"
-						+ "Passer son tour : 9");
-
-				code = sc.nextInt();	
-			}	
-				
-			hdv.actionDansLaVille(p, code, grilleDeJeu);
+			// Cheat pour mettre 11 planches dans la case d'à côté
+			int numCase = Grille.numeroCaseDansLaListe("M", 13);
+			grilleDeJeu.get(numCase).setNbPlanche(11);
+			//****************************************************
+			
+			if (hdv.enVille(p))
+				hdv.actionDansLaVille(p, grilleDeJeu);			
+			else
+				hdv.actionDehors(p, grilleDeJeu);
 						
 			//*************************//
 			/*Player.avancerDroite(listPlayer.get(i));

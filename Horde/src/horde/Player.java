@@ -79,6 +79,8 @@ public class Player {
 		this.sac = sac;
 	}
 	
+	//************************************************************************************//
+	
 	public static void avancerDroite(Player p) {
 		if (p.getPa()>0) {
 			System.out.println("Nombre de PA du joueur : " + p.getPa());
