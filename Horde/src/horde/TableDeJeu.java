@@ -20,6 +20,9 @@ public class TableDeJeu {
 		// création de la banque dans la ville
 		hdv.createBanque();
 		
+		// création du puits
+		hdv.createPuits();
+		
 		int code = -1;
 		
 		// Création des joueurs
@@ -29,36 +32,47 @@ public class TableDeJeu {
 			System.out.println("Pseudo du joueur " + i + " :");
 			String str = sc.nextLine();
 
-			Player p = new Player(str, i);
+			Player p = new Player(str/*, i*/);
 			listPlayer.add(p);
 		}
 		
-		for (int i = 0 ; i < listPlayer.size(); i++) {
-			Player p = listPlayer.get(i);
-			System.out.println("C'est à " + listPlayer.get(i).getPseudo() + " de jouer!");
-			
-			//System.out.println(p.getAbscisse() + " " + p.getOrdonne());
-
-			// Cheat pour mettre 11 planches dans la case d'à côté
-			int numCase = Grille.numeroCaseDansLaListe("M", 13);
-			grilleDeJeu.get(numCase).setNbPlanche(11);
-			//****************************************************
-			
-			if (hdv.enVille(p))
-				hdv.actionDansLaVille(p, grilleDeJeu);			
-			else
-				hdv.actionDehors(p, grilleDeJeu);
-						
-			//*************************//
-			/*Player.avancerDroite(listPlayer.get(i));
-			//System.out.println(listPlayer.get(i).getPa()+"/6 PA "+ listPlayer.get(i).getAbscisse());
-			
-			int numCase = Grille.numeroCaseDansLaListe(p.getAbscisse(), p.getOrdonne());
-
-			grilleDeJeu.get(numCase).setNbPlanche(11);
-			p.fouiller(p, grilleDeJeu);
-			//p.getSac().forEach((temp) -> {System.out.println(temp.getClass());});
-			Player.avancerGauche(listPlayer.get(i));*/
+		while (listPlayer.size() != 1) {
+			for (int i = 0 ; i < listPlayer.size(); i++) {
+				Player p = listPlayer.get(i);
+				System.out.println("**********************");
+				System.out.println("C'est à " + listPlayer.get(i).getPseudo() + " de jouer!");
+				System.out.println("**********************");
+				
+				//System.out.println(p.getAbscisse() + " " + p.getOrdonne());
+		
+				// Cheat pour mettre 11 planches dans la case d'à côté
+				int numCase = Grille.numeroCaseDansLaListe("M", 13);
+				grilleDeJeu.get(numCase).setNbPlanche(5);
+				grilleDeJeu.get(numCase).setNbMetal(5);
+				grilleDeJeu.get(numCase).setNbZombies(0);
+				//****************************************************
+				
+				if (hdv.enVille(p))
+					hdv.actionDansLaVille(p, grilleDeJeu);			
+				else
+					hdv.actionDehors(p, grilleDeJeu);
+				
+				// +1 POUR LE TOUR DU JOUEUR
+				p.setNbTour(p.getNbTour()+1);
+				
+				System.out.println("TAille du sac "+p.getSac().size());
+							
+				//*************************//
+				/*Player.avancerDroite(listPlayer.get(i));
+				//System.out.println(listPlayer.get(i).getPa()+"/6 PA "+ listPlayer.get(i).getAbscisse());
+				
+				int numCase = Grille.numeroCaseDansLaListe(p.getAbscisse(), p.getOrdonne());
+		
+				grilleDeJeu.get(numCase).setNbPlanche(11);
+				p.fouiller(p, grilleDeJeu);
+				//p.getSac().forEach((temp) -> {System.out.println(temp.getClass());});
+				Player.avancerGauche(listPlayer.get(i));*/
+			}
 		}
 		
 		//grille.affiche(ok);

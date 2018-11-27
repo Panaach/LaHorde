@@ -53,22 +53,18 @@ public class HotelDeVille extends Case{
 	}
 	
 	public void createBanque() {
-		ArrayList<ObjetJeu> stockePlanche = new ArrayList<>();
-		ArrayList<ObjetJeu> stockeMetal = new ArrayList<>();
+		ArrayList<ObjetJeu> stockePlanche = new ArrayList<>(); // ID 0
+		ArrayList<ObjetJeu> stockeMetal = new ArrayList<>(); // ID 1
+		ArrayList<ObjetJeu> stockeGourde = new ArrayList<>(); // ID 2
 		
 		getBanque().add(stockePlanche);
 		getBanque().add(stockeMetal);
+		getBanque().add(stockeGourde);
 	}
-	
-	/*System.out.println("Que Voulez vous faire?\n"
-			+ "Sortir de la ville : 1\n"
-			+ "Aller à la banque : 2\n"
-			+ "Aller au puit : 3");*/
 	
 	public void actionDansLaVille(Player p, LinkedList<Case> grilleDeJeu) {
 		int code = -1;
 		Scanner sc = new Scanner(System.in);
-		
 		while (code != 1 && code != 2 && code != 3 && code != 9) {
 			System.out.println("\nQue Voulez vous faire?\n"
 					+ "Sortir de la ville (se déplacer) : 1\n"
@@ -99,7 +95,9 @@ public class HotelDeVille extends Case{
 					setGrandePorte(true);
 					p.setPa(p.getPa()-1);
 					System.out.println("Vous avez ouvert la porte!");
-				} else 
+				} else if (id == 1)
+					actionDansLaVille(p, grilleDeJeu);
+				else
 					System.out.println("Vous ne possédez pas assez de PA!");
 				// Une fois la porte ouverte alors le joueur peut exécuter des actions dehors
 				actionDehors(p, grilleDeJeu);
@@ -112,23 +110,58 @@ public class HotelDeVille extends Case{
 				System.out.println("Voulez-vous stocker vos items dans la banque?\n"
 						+ "Stocker les items = 0\n"
 						+ "Afficher les items = 1\n"
-						+ "Ne rien faire = 2");
+						+ "Ne rien faire = 9");
 				int id = sc.nextInt();
 				
-				if (id == 0) {
+				switch (id)
+				{
+				case 0 :
 					p.getSac().forEach((temp) -> {
 						// ObjetJeu objet = temp;
-						getBanque().get(temp.getId(temp)).add(temp);
-						p.getSac().remove(temp);
+						// getId obtient le numéro (0 pl, 1 met, 2 gourde) du "tableau"  en fonction de l'objet
+						// j'ajoute donc l'objet dans le tableau correspondant
+						getBanque().get(ObjetJeu.getId(temp)).add(temp);
+				//tb de la banque     num du tb				ajout de l'objet
 					});
-				} else if (id == 1) {
-					for (int i = 0; i < getBanque().size(); i++) {
-						System.out.println(getBanque().get(i).size() + " Planches");
-					}
-				}
+					p.getSac().clear();
+					break;
+				case 1 :
+					System.out.println(getBanque().get(0).size() + " planche(s)");
+					System.out.println(getBanque().get(1).size() + " métal(s)");
+					System.out.println(getBanque().get(2).size() + " gourde(s)");
+					break;
+				case 9 :
+					break;
+				
+				} 
+			} else {
+				System.out.println(getBanque().get(0).size() + " planche(s)");
+				System.out.println(getBanque().get(1).size() + " métal(s)");
+				System.out.println(getBanque().get(2).size() + " gourde(s)");
 			}
 			actionDansLaVille(p, grilleDeJeu);
+			
+		case 3 :
+			if (getPuits().size()>0) {
+				if (!p.isRecupGourde()) {
+					if (p.getSac().size() != 10) {
+						p.setRecupGourde(true);
+						p.getSac().add(new Gourde());
+						getPuits().remove(0);
+						System.out.println("Gourde obtenue!");
+					} else 
+						System.out.println("Vous n'avez pas de place dans votre sac pour de l'eau!");
+				} else {
+					System.out.println("Vous devez attendre 12 tours avant de pouvoir récupérer une autre gourde!");
+				}
+			} else {
+				System.out.println("Le puits est vide!");
+			}
+			// retour dans la ville pour effectuer de nouvelle action
+			actionDansLaVille(p, grilleDeJeu);
+			
 		case 9 :
+			p.setNbTour(p.getNbTour() + 1);
 			break;			
 		}
 	}
@@ -149,8 +182,6 @@ public class HotelDeVille extends Case{
 					+ "Passer son tour : 9");
 			code = sc.nextInt();
 			
-
-			System.out.println("-------------->"+p.getAbscisse()+p.getOrdonne());
 			if (code == 9)
 				break;
 			
@@ -168,13 +199,12 @@ public class HotelDeVille extends Case{
 			case 3 :
 				Player.avancerGauche(p);
 				break;
+			case 9 :
+				p.setNbTour(p.getNbTour() + 1);
+				break;
 			}
 			
-			// position du joueur apres s'être déplacer
-			System.out.println("-------------->"+p.getAbscisse()+p.getOrdonne());
-			// si le joueur n'est pas en ville il peut fouiller la case
-			System.out.println(enVille(p));
-			
+			// si le joueur n'est pas en ville alors il peut tuer ou fouiller des cases
 			if (!enVille(p)) {
 				caseAct = grilleDeJeu.get(Grille.numeroCaseDansLaListe(p.getAbscisse(), p.getOrdonne()));
 				System.out.println("\n" + caseAct.getNbZombies() + " zombies dans cette case!");
@@ -182,26 +212,62 @@ public class HotelDeVille extends Case{
 				if (caseAct.getNbZombies()>0) {
 					System.out.println("Que voulez-vous faire dans cette case?\n"
 							+ "Fouiller la case : 0\n"
-							+ "Tuer un zombie : 1\n"
-							+ "Ne rien faire : 2");
+							+ "Utiliser un objet dans le sac : 1\n"
+							+ "Tuer un zombie : 2\n"
+							+ "Ne rien faire : 9");
 				} else {
 					System.out.println("\nQue voulez-vous faire dans cette case?\n"
 							+ "Fouiller la case : 0\n"
-							+ "Ne rien faire : 2");
+							+ "Utiliser un objet dans le sac : 1\n"
+							+ "Ne rien faire : 9");
 				}
 				code = sc.nextInt();
-				
-				if (code == 0) {
-					p.fouiller(p, grilleDeJeu);
-				} else if (code == 1) {
-					p.tuerUnZombie(p, grilleDeJeu);
-					System.out.println("\n" + caseAct.getNbZombies() + " zombies dans cette case!");
-				}
-	/************************ICI JE PEUX TUER DES ZOMBIES A CHANGER***********************************/
-				
-				if (caseAct.getNbZombies()>p.getPa()) {
-					System.out.println("\nTrop de zombies vous ne pouvez plus vous déplacer!");
+
+				switch (code)
+				{
+				case 0 :
+					p.fouiller(p, grilleDeJeu); // FOUILLER UNE CASE
 					break;
+				case 1 : // UTILISER UN OBJET DANS LE SAC
+
+					p.getSac().forEach((temp) -> {
+						// ObjetJeu objet = temp;
+						if (ObjetJeu.getId(temp) == 2) {
+							System.out.println("Voulez-vous utiliser votre gourde?\n"
+									+ "Utiliser : 0\n"
+									+ "Ne rien faire : 1");
+							int utiliser = sc.nextInt();
+							
+							if (utiliser == 0) { // GOURDE UTILISER : + 6PA
+								p.getSac().remove(temp);
+								p.setPa(6);
+							}
+							return;
+						}				
+					});
+					break;
+				case 2 :// TUER UN ZOMBIE
+					p.tuerUnZombie(p, grilleDeJeu);
+					System.out.println("\n" + caseAct.getNbZombies() + " zombies dans cette case!");	
+					break;	
+					
+				case 9 : // NE RIEN FAIRE
+					break;
+				}
+
+				// S'il y a trop de zombies dans la case le joueur ne peut plus se déplacer 
+				// TODO IL PERDS DES PV OU UN TRUC DU GENRE A RAJOUTER !!!
+				if (caseAct.getNbZombies()>p.getPa()) {
+					System.out.println("\nTrop de zombies vous ne pouvez plus vous déplacer!\n"
+							+ "Voulez-vous tuer un zombie?\n"
+							+ "Tuer un zombie : 0 \n"
+							+ "Ne rien faire : 1");
+					code = sc.nextInt();
+					
+					if (code == 0)
+						p.tuerUnZombie(p, grilleDeJeu);
+					else
+						break;
 				}
 
 			} else { // sinon je suis en ville (je regarde si la porte est ouverte) si oui alors je peut effectuer des actions en ville

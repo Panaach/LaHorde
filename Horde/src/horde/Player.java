@@ -8,17 +8,21 @@ public class Player {
 	private String abscisse;
 	private int ordonne;
 	private String pseudo;
-	private int indice;
+	private boolean recupGourde;
+	//private int indice;
+	private int nbTour;
 	private int pa;
 	private int pv;
 	private ArrayList<ObjetJeu> sac = new ArrayList<>();
 	
 	// Constructeur
-	public Player(String pseudo, int indice) {
+	public Player(String pseudo/*, int indice*/) {
 		this.setPseudo(pseudo);
+		this.setNbTour(nbTour);	
+		this.setRecupGourde(false);
 		this.setPa(6);
 		this.setPv(100);
-		this.setIndice(indice);
+		//this.setIndice(indice);
 		this.setAbscisse("L");
 		this.setOrdonne(13);
 	}
@@ -29,6 +33,22 @@ public class Player {
 	
 	public void setPseudo(String pseudo) {
 		this.pseudo = pseudo;
+	}
+	
+	public boolean isRecupGourde() {
+		return recupGourde;
+	}
+	
+	public void setRecupGourde(boolean recupGourde) {
+		this.recupGourde = recupGourde;
+	}
+	
+	public int getNbTour() {
+		return nbTour;
+	}
+	
+	public void setNbTour(int nbTour) {
+		this.nbTour = nbTour;
 	}
 	
 	public int getPa() {
@@ -47,13 +67,13 @@ public class Player {
 		this.pv = pv;
 	}
 	
-	public int getIndice() {
+	/*public int getIndice() {
 		return indice;
 	}
 	
 	public void setIndice(int indice) {
 		this.indice = indice;
-	}
+	}*/
 
 	public String getAbscisse() {
 		return abscisse;
@@ -154,6 +174,8 @@ public class Player {
 			// Si mon sac n'est pas vide alors j'évite le nullPointerexeption
 			if (!p.getSac().isEmpty()) {
 				if (caseActuelle.getNbPlanche() != 0 || caseActuelle.getNbMetal() != 0) {
+					System.out.println(caseActuelle.getNbPlanche() + " planches\n"
+							+ caseActuelle.getNbMetal() + " métals");
 					for (int i = p.getSac().size(); i < 10; i++) {
 
 						if (caseActuelle.getNbPlanche() != 0) {
