@@ -311,10 +311,8 @@ public class Player {
 	}
 	
 	public void utiliserUnObjet(Player p) {
-		System.out.println("POURQUOI????????");
 		if (!p.getSac().isEmpty()) { // sac non vide
 			Scanner sc = new Scanner(System.in);
-System.out.println("TEST");
 			p.getSac().forEach((temp) -> {
 				// ObjetJeu objet = temp;					
 				if (ObjetJeu.getId(temp) == 3) { // POUR UTILISER UNE GOURDE

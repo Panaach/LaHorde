@@ -27,7 +27,6 @@ public class TableDeJeu {
 		
 		// Création des joueurs
 		for (int i = 0; i < nbPlayer; i++) {
-			@SuppressWarnings("resource")
 			Scanner sc = new Scanner(System.in);
 			System.out.println("Pseudo du joueur " + i + " :");
 			String str = sc.nextLine();

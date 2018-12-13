@@ -8,8 +8,8 @@ public class HotelDeVille extends Case{
 	
 	private LinkedList<Integer> puits = new LinkedList<>();
 	private ArrayList<ArrayList<ObjetJeu>> banque = new ArrayList<>();
-	private HashSet chantiers = new HashSet();
 	private static boolean grandePorte;
+	private int defense = 20;
 	
 	public HotelDeVille(String abscisse, int ordonne) {
 		super(abscisse, ordonne);
@@ -22,6 +22,14 @@ public class HotelDeVille extends Case{
 
 	public void setGrandePorte(boolean grandePorte) {
 		this.grandePorte = grandePorte;
+	}
+
+	public int getDefense() {
+		return defense;
+	}
+
+	public void setDefense(int defense) {
+		this.defense = defense;
 	}
 
 	public ArrayList<ArrayList<ObjetJeu>> getBanque() {
@@ -68,16 +76,15 @@ public class HotelDeVille extends Case{
 	public void actionDansLaVille(Player p, LinkedList<Case> grilleDeJeu) {
 		int code = -1;
 		Scanner sc = new Scanner(System.in);
-		while (code != 1 && code != 2 && code != 3 && code != 9) {
-			System.out.println("\nQue Voulez vous faire?\n"
-					+ "Sortir de la ville (se déplacer) : 1\n"
-					+ "Aller à la banque : 2\n"
-					+ "Aller au puit : 3\n"
-					+ "Utiliser un objet : 4\n"
-					+ "Passer son tour : 9");
+		System.out.println("\nQue Voulez vous faire?\n"
+				+ "Sortir de la ville (se déplacer) : 1\n"
+				+ "Aller à la banque : 2\n"
+				+ "Aller au puit : 3\n"
+				+ "Utiliser un objet : 4\n"
+				+ "Aller au chantier : 5\n"
+				+ "Passer son tour : 9");
 
-			code = sc.nextInt();	
-		}
+		code = sc.nextInt();	
 		
 		switch (code)
 		{
@@ -180,6 +187,11 @@ public class HotelDeVille extends Case{
 		case 4 : // UTILISER UN OBJET
 			System.out.println("TEST");
 			p.utiliserUnObjet(p);
+			break;
+			
+		case 5 : // CHANTIER
+			GestionChantier gestion = new GestionChantier();
+			gestion.gestionChantier(grilleDeJeu);
 			break;
 			
 		case 9 :
