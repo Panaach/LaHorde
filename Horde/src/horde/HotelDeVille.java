@@ -6,14 +6,16 @@ public class HotelDeVille extends Case{
 	// Toutes les interactions qu'il sont possibles de faire dans l'hdv
 	// modification des setters avec les collections pour ajouter des objects dans ces collections
 	
-	private LinkedList<Integer> puits = new LinkedList<>();
-	private ArrayList<ArrayList<ObjetJeu>> banque = new ArrayList<>();
+	private int puits;
+	private static ArrayList<ArrayList<ObjetJeu>> banque = new ArrayList<>();
 	private static boolean grandePorte;
-	private int defense = 20;
+	private int defense;
+	GestionChantier gestion = new GestionChantier();
 	
 	public HotelDeVille(String abscisse, int ordonne) {
 		super(abscisse, ordonne);
 		this.setGrandePorte(false);
+		this.setPuits(150);
 	}
 
 	public static boolean isGrandePorte() {
@@ -32,24 +34,22 @@ public class HotelDeVille extends Case{
 		this.defense = defense;
 	}
 
-	public ArrayList<ArrayList<ObjetJeu>> getBanque() {
+	public static ArrayList<ArrayList<ObjetJeu>> getBanque() {
 		return banque;
 	}
 
 	public void setBanque(ArrayList<ArrayList<ObjetJeu>> banque) {
 		this.banque = banque;
 	}
-
-	public LinkedList<Integer> getPuits() {
-		return puits;
-	}
 	
 	// ********************************************************* //
 	
-	public void createPuits() {
-		for (int i = 0; i < 150; i++) {
-			this.getPuits().add(1);
-		}
+	public int getPuits() {
+		return puits;
+	}
+
+	public void setPuits(int puits) {
+		this.puits = puits;
 	}
 	
 	public boolean enVille(Player p) {
@@ -74,6 +74,7 @@ public class HotelDeVille extends Case{
 	}
 	
 	public void actionDansLaVille(Player p, LinkedList<Case> grilleDeJeu) {
+		//System.out.println("**************************************************************************** "+getBanque().get(0).size());
 		int code = -1;
 		Scanner sc = new Scanner(System.in);
 		System.out.println("\nQue Voulez vous faire?\n"
@@ -164,13 +165,14 @@ public class HotelDeVille extends Case{
 			break;
 			//****************************************************************************************************
 		case 3 : // PUITS
-			if (getPuits().size()>0) {
-				System.out.println(p.getSac().size());
+			//System.out.println(getPuits().size());
+			if (getPuits() != 0) {
+				//System.out.println(p.getSac().size());
 				if (!p.isRecupGourde()) {
 					if (p.getSac().size() < 10) {
 						p.setRecupGourde(true);
 						p.getSac().add(new Gourde());
-						getPuits().remove(0);
+						setPuits(getPuits()-1);
 						System.out.println("Gourde obtenue!");
 					} else 
 						System.out.println("Vous n'avez pas de place dans votre sac pour de l'eau!");
@@ -185,13 +187,13 @@ public class HotelDeVille extends Case{
 			break;
 			
 		case 4 : // UTILISER UN OBJET
-			System.out.println("TEST");
+			//System.out.println("TEST");
 			p.utiliserUnObjet(p);
 			break;
 			
 		case 5 : // CHANTIER
-			GestionChantier gestion = new GestionChantier();
-			gestion.gestionChantier(grilleDeJeu);
+			System.out.println(getBanque().get(0).size());
+			gestion.gestionChantier(getBanque(), p, grilleDeJeu, defense);
 			break;
 			
 		case 9 :

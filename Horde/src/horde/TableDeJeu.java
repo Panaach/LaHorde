@@ -20,8 +20,7 @@ public class TableDeJeu {
 		// création de la banque dans la ville
 		hdv.createBanque();
 		
-		// création du puits
-		hdv.createPuits();
+		hdv.setDefense(20);
 		
 		int code = -1;
 		
@@ -34,9 +33,27 @@ public class TableDeJeu {
 			Player p = new Player(str/*, i*/);
 			listPlayer.add(p);
 		}
+		// Cheat
+		int numCase = Grille.numeroCaseDansLaListe("M", 13);
+		for (int j = 0; j<540; j++) {
+			hdv.getBanque().get(0).add(new Planche());
+			hdv.getBanque().get(1).add(new Metal());					
+		}
+		grilleDeJeu.get(numCase).setNbPlanche(5);
+		grilleDeJeu.get(numCase).setNbMetal(5);
+		grilleDeJeu.get(numCase).setNbZombies(0);
+		//****************************************************
 		
 		while (listPlayer.size() != 1) {
 			for (int i = 0 ; i < listPlayer.size(); i++) {
+				
+				// TOUTE LES INFOS QUE JE VEUX
+				System.out.println("NB planches " + hdv.getBanque().get(0).size() +
+						" NB metals " + hdv.getBanque().get(1).size()+ 
+						" PUITS " + hdv.getPuits());
+				
+				
+				
 				Player p = listPlayer.get(i);
 				System.out.println("**********************");
 				System.out.println("C'est à " + listPlayer.get(i).getPseudo() + " de jouer!");
@@ -44,13 +61,7 @@ public class TableDeJeu {
 				
 				//System.out.println(p.getAbscisse() + " " + p.getOrdonne());
 		
-				System.out.println(listPlayer.get(i).getSac() + "");
-				// Cheat
-				int numCase = Grille.numeroCaseDansLaListe("M", 13);
-				grilleDeJeu.get(numCase).setNbPlanche(5);
-				grilleDeJeu.get(numCase).setNbMetal(5);
-				grilleDeJeu.get(numCase).setNbZombies(0);
-				//****************************************************
+				System.out.println("Sac du joueur "+ listPlayer.get(i).getPseudo() + " " +listPlayer.get(i).getSac());
 				
 				if (hdv.enVille(p))
 					hdv.actionDansLaVille(p, grilleDeJeu);			
