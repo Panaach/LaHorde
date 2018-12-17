@@ -6,8 +6,7 @@ public class HotelDeVille extends Case{
 	// Toutes les interactions qu'il sont possibles de faire dans l'hdv
 	// modification des setters avec les collections pour ajouter des objects dans ces collections
 	
-	private int puits;
-	private static ArrayList<ArrayList<ObjetJeu>> banque = new ArrayList<>();
+	private ArrayList<ArrayList<ObjetJeu>> banque = new ArrayList<>();
 	private static boolean grandePorte;
 	private int defense;
 	GestionChantier gestion = new GestionChantier();
@@ -15,7 +14,6 @@ public class HotelDeVille extends Case{
 	public HotelDeVille(String abscisse, int ordonne) {
 		super(abscisse, ordonne);
 		this.setGrandePorte(false);
-		this.setPuits(150);
 	}
 
 	public static boolean isGrandePorte() {
@@ -34,7 +32,7 @@ public class HotelDeVille extends Case{
 		this.defense = defense;
 	}
 
-	public static ArrayList<ArrayList<ObjetJeu>> getBanque() {
+	public ArrayList<ArrayList<ObjetJeu>> getBanque() {
 		return banque;
 	}
 
@@ -43,15 +41,7 @@ public class HotelDeVille extends Case{
 	}
 	
 	// ********************************************************* //
-	
-	public int getPuits() {
-		return puits;
-	}
 
-	public void setPuits(int puits) {
-		this.puits = puits;
-	}
-	
 	public boolean enVille(Player p) {
 		if (p.getAbscisse().equals("L") && p.getOrdonne() == 13) 
 			return true;
@@ -73,8 +63,7 @@ public class HotelDeVille extends Case{
 		getBanque().add(stockeRation);
 	}
 	
-	public void actionDansLaVille(Player p, LinkedList<Case> grilleDeJeu) {
-		//System.out.println("**************************************************************************** "+getBanque().get(0).size());
+	public void actionDansLaVille(Player p, LinkedList<Case> grilleDeJeu, Case[][] grilleCase) {
 		int code = -1;
 		Scanner sc = new Scanner(System.in);
 		System.out.println("\nQue Voulez vous faire?\n"
@@ -92,7 +81,7 @@ public class HotelDeVille extends Case{
 		case 1 : // sortir de la ville
 			if (isGrandePorte() == true) {
 				// Le joueur va exécuter des actions dehors
-				actionDehors(p, grilleDeJeu);
+				actionDehors(p, grilleDeJeu, grilleCase);
 			} else {
 				int id = -1;
 				while (id != 0 && id != 1) {
@@ -108,15 +97,17 @@ public class HotelDeVille extends Case{
 					p.setPa(p.getPa()-1);
 					System.out.println("Vous avez ouvert la porte!");
 				} else if (id == 1) {
-					actionDansLaVille(p, grilleDeJeu);
+					actionDansLaVille(p, grilleDeJeu, grilleCase);
 				} else
 					System.out.println("Vous ne possédez pas assez de PA!");
 				// Une fois la porte ouverte alors le joueur peut exécuter des actions dehors
-				actionDehors(p, grilleDeJeu);
+				actionDehors(p, grilleDeJeu, grilleCase);
 			}
 			break;
 			/* ---------------------------------------------------------------------------------------------->*/
 		case 2 : // BANQUE
+
+			System.out.println("\nPSEUDO DU SAC " + p.getSac().size());
 			sc = new Scanner(System.in);
 			System.out.println("Que voulez-vous faire à la banque?\n"
 					+ "Stocker les items : 0\n"
@@ -128,16 +119,45 @@ public class HotelDeVille extends Case{
 				switch (id)
 				{
 				case 0 :
+					System.out.println("\nSac du joeuur" + p.getSac().size());
 					if (!p.getSac().isEmpty()) {
-						p.getSac().forEach((temp) -> {
-							// ObjetJeu objet = temp;
-							// getId obtient le numéro (0 pl, 1 met, 2 gourde) du "tableau"  en fonction de l'objet
-							// j'ajoute donc l'objet dans le tableau correspondant
-							if (ObjetJeu.getId(temp) != 3) // si ce n'est pas une gourde alors
+						
+						for (int i = 0; i < p.getSac().size(); i++) {
+							ObjetJeu temp = p.getSac().get(i);
+							
+							if (ObjetJeu.getId(temp) != 3 && ObjetJeu.getId(temp) != 4) {// si ce n'est pas une boisson / une gourde alors
 								getBanque().get(ObjetJeu.getId(temp)).add(temp);
-					//tb de la banque     num du tb				ajout de l'objet
-						});
-						p.getSac().clear();
+							}
+							
+							p.getSac().remove(i);
+						}
+
+						System.out.println("\nSac du joeuur" + p.getSac().size());
+						/*p.getSac().forEach((temp) -> {
+							
+							// ObjetJeu objet = temp;
+							// getId obtient le numéro (0 pl, 1 met, 2 ration, 3 gourde) du "tableau"  en fonction de l'objet
+							// j'ajoute donc l'objet dans le tableau correspondant
+							if (ObjetJeu.getId(temp) != 3 && ObjetJeu.getId(temp) != 4) {// si ce n'est pas une boisson / une gourde alors
+								getBanque().get(ObjetJeu.getId(temp)).add(temp);
+					 //tb de la banque          num du tb		      ajout de l'objet
+								p.getSac().remove(temp);
+								
+							} else if (ObjetJeu.getId(temp) == 2) {
+								Scanner ok = new Scanner(System.in);
+								System.out.println("Voulez-vous stocker la ration?\n"
+										+ "Oui : 1\n"
+										+ "Non : 2");
+								int reponse = ok.nextInt();
+								
+								if (reponse == 1) {
+									getBanque().get(ObjetJeu.getId(temp)).add(temp);
+									p.getSac().remove(temp);									
+								}
+							}
+							 
+						});*/
+						
 					} else 
 						System.out.println("Votre sac est vide!");
 					break;
@@ -161,12 +181,27 @@ public class HotelDeVille extends Case{
 					break;
 				
 				}
-				actionDansLaVille(p, grilleDeJeu);
+				actionDansLaVille(p, grilleDeJeu, grilleCase);
 			break;
 			//****************************************************************************************************
 		case 3 : // PUITS
 			//System.out.println(getPuits().size());
-			if (getPuits() != 0) {
+
+			boolean hasGourde = false;
+			for (int i = 0; i < p.getSac().size(); i++) {
+				if (ObjetJeu.getId(p.getSac().get(i)) == 3)
+					hasGourde = true;
+					
+			}
+			
+			if (!hasGourde) {
+				p.getSac().add(new Gourde());
+				System.out.println("Gourde obtenue!");				
+			} else {
+				System.out.println("Vous avez déjà une gourde dans votre sac!");
+			}			
+			
+			/*if (getPuits() != 0) {
 				//System.out.println(p.getSac().size());
 				if (!p.isRecupGourde()) {
 					if (p.getSac().size() < 10) {
@@ -181,19 +216,21 @@ public class HotelDeVille extends Case{
 				}
 			} else {
 				System.out.println("Le puits est vide!");
-			}
+			}*/
 			// retour dans la ville pour effectuer de nouvelle action
-			actionDansLaVille(p, grilleDeJeu);
+			actionDansLaVille(p, grilleDeJeu, grilleCase);
 			break;
 			
 		case 4 : // UTILISER UN OBJET
 			//System.out.println("TEST");
 			p.utiliserUnObjet(p);
+			actionDansLaVille(p, grilleDeJeu, grilleCase);
 			break;
 			
 		case 5 : // CHANTIER
-			System.out.println(getBanque().get(0).size());
-			gestion.gestionChantier(getBanque(), p, grilleDeJeu, defense);
+			setBanque(gestion.gestionChantier(getBanque(), p, grilleDeJeu, defense));
+			actionDansLaVille(p, grilleDeJeu, grilleCase);
+			
 			break;
 			
 		case 9 :
@@ -202,20 +239,37 @@ public class HotelDeVille extends Case{
 		}
 	}
 	
-	public void actionDehors(Player p, LinkedList<Case> grilleDeJeu) {
+	public void actionDehors(Player p, LinkedList<Case> grilleDeJeu, Case[][] grilleCase) {
 		int code = -1;
 		
+
+		System.out.println("\nPSEUDO DU SAC " + p.getSac().size());
+		
 		// Case dans laquelle se trouve le joueur
-		Case caseAct = grilleDeJeu.get(Grille.numeroCaseDansLaListe(p.getAbscisse(), p.getOrdonne()));
-		while (true) { // TODO a changer
-			//System.out.println(p.getAbscisse() + " " + p.getOrdonne());
+		//Case caseAct = grilleDeJeu.get(Grille.numeroCaseDansLaListe(p.getAbscisse(), p.getOrdonne()));
+		
+		boolean action = true;
+		
+		while (action) {
+			
+			if (p.getPv() <= 0) {
+				System.out.println("Vous avez succombé à vos blessures! (Vous êtes mort)");
+				break;
+			}
+
+			System.out.println("\nVotre sac contient : " + p.getSac().size() + " objets!");
+			
+			//System.out.println("SIZE" + grilleDeJeu.size());
+			System.out.println("\nVous êtes actuellement en " + p.getAbscisse() + " " + p.getOrdonne());
 			Scanner sc = new Scanner(System.in);
-			System.out.println("Où souhaitez-vous vous déplacer?\n"
+			System.out.println("\nOù souhaitez-vous vous déplacer?\n"
 					+ "Nord : 0\n"
 					+ "Est : 1\n"
 					+ "Sud : 2\n"
 					+ "Ouest : 3\n"
 					+ "Utiliser un objet : 4\n"
+					+ "Afficher le talkie-walkie : 5\n"
+					+ "Mettre à jour le talkie-walkie : 6\n"
 					+ "Passer son tour : 9");
 			code = sc.nextInt();
 			
@@ -223,29 +277,39 @@ public class HotelDeVille extends Case{
 			{
 			case 0 :
 				Player.avancerHaut(p);
-				p.actionPossibleDuJoeur(p, grilleDeJeu);
+				p.actionPossibleDuJoeur(p, grilleDeJeu, grilleCase);
 				break;
 			case 1 :
 				Player.avancerDroite(p);
-				p.actionPossibleDuJoeur(p, grilleDeJeu);
+				p.actionPossibleDuJoeur(p, grilleDeJeu, grilleCase);
 				break;
 			case 2 :
 				Player.avancerBas(p);
-				p.actionPossibleDuJoeur(p, grilleDeJeu);
+				p.actionPossibleDuJoeur(p, grilleDeJeu, grilleCase);
 				break;
 			case 3 :
 				Player.avancerGauche(p);
-				p.actionPossibleDuJoeur(p, grilleDeJeu);
+				p.actionPossibleDuJoeur(p, grilleDeJeu, grilleCase);
 				break;
 			case 4 :
 				p.utiliserUnObjet(p);
 				break;
+			case 5 :
+				System.out.println("\nVoici la map à ce tour :");
+				Talkie t = new Talkie();
+				t.afficheMap(grilleCase);
+				break;
+			case 6 :				
+				Case c = grilleDeJeu.get(Grille.numeroCaseDansLaListe(p.getAbscisse(), p.getOrdonne()));
+				
+				p.majTalkie(p, grilleCase, c.hasBoisson(), c.getNbPlanche(), c.getNbMetal());
+				System.out.println("\nTalkie-walkie mis-à-jour!");
+				actionDehors(p, grilleDeJeu, grilleCase);
 			case 9 :
 				System.out.println("Tour passé!");
+				action = false;
 				break;
-			}
-			
-			
+			}			
 		}
 	}
 	

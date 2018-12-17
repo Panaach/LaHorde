@@ -8,21 +8,22 @@ public class Case {
 	private int nbZombies;
 	private int nbPlanche; 
 	private int nbMetal;
-	//private int nbBoissons;
+	private boolean boisson;
+	private boolean affCase;
 	
 	public Case(String abscisse, int ordonne) {
 		this.setAbscisse(abscisse);
 		this.setOrdonne(ordonne);
-		//this.setNbBoissons(nbBoissons);
 	}
 	
-	public Case(String abscisse, int ordonne, int nbZombies, int nbPlanche, int nbMetal/*, int nbBoissons*/) {
+	public Case(String abscisse, int ordonne, int nbZombies, int nbPlanche, int nbMetal, boolean boisson, boolean affCase) {
 		this.setAbscisse(abscisse);
 		this.setOrdonne(ordonne);
 		this.setNbZombies(nbZombies);
 		this.setNbPlanche(nbPlanche);
 		this.setNbMetal(nbMetal);
-		//this.setNbBoissons(nbBoissons);
+		this.setBoisson(boisson);
+		this.setAffCase(affCase);
 	}
 	
 	public int getNbZombies() {
@@ -65,5 +66,21 @@ public class Case {
 
 	public void setOrdonne(int ordonnée) {
 		this.ordonne = ordonnée;
+	}
+
+	public boolean hasBoisson() {
+		return boisson;
+	}
+
+	public void setBoisson(boolean boisson) {
+		this.boisson = boisson;
+	}
+
+	public boolean isAffCase() {
+		return affCase;
+	}
+
+	public void setAffCase(boolean affCase) {
+		this.affCase = affCase;
 	}
 }

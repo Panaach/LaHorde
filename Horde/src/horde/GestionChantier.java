@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Scanner;
 
-public class GestionChantier/* extends HotelDeVille*/{
+public class GestionChantier {
 	// Constructeur
 	public GestionChantier() {
         this.setMurPlanche(20);
@@ -37,39 +37,39 @@ public class GestionChantier/* extends HotelDeVille*/{
     }
 
 	// Mur d'enceinte
-	private int murPlanche = 20;
-	private int murMetal = 5;
-	private int murPA = 10;
+	private int murPlanche;
+	private int murMetal;
+	private int murPA;
 	
 	// Fil barbelész
-	private int filPlanche = 20;
-	private int filMetal = 30;
-	private int filPA = 20;
+	private int filPlanche;
+	private int filMetal;
+	private int filPA;
 	
 	// Fosses à zombies 
-	private int fossePlanche = 50;
-	private int fosseMetal = 25;
-	private int fossePA = 30;
+	private int fossePlanche;
+	private int fosseMetal;
+	private int fossePA;
 	
 	// Mine autour de la ville
-	private int minePlanche = 10;
-	private int mineMetal = 50;
-	private int minePA = 30;
+	private int minePlanche;
+	private int mineMetal;
+	private int minePA;
 	
 	// Porte blindées
-	private int portePlanche = 50;
-	private int porteMetal = 50;
-	private int portePA = 40;
+	private int portePlanche;
+	private int porteMetal;
+	private int portePA;
 	
 	// Miradors avec mitrailleuse auto
-	private int miradorPlanche = 75;
-	private int miradorMetal = 75;
-	private int miradorPA = 50;
+	private int miradorPlanche;
+	private int miradorMetal;
+	private int miradorPA;
 	
 	// Abris anti-atomique
-	private int abrisPlanche = 100;
-	private int abrisMetal = 200;
-	private int abrisPA = 60;
+	private int abrisPlanche;
+	private int abrisMetal;
+	private int abrisPA;
 	
 	public int getMurPlanche() {
 		return murPlanche;
@@ -239,11 +239,11 @@ public class GestionChantier/* extends HotelDeVille*/{
 	}
 
 	// ----------------------------------------------------------------------------------------------------------------------
-	public void gestionChantier(ArrayList<ArrayList<ObjetJeu>> banque, Player p, LinkedList<Case> grilleDeJeu, int defense) {
+	public ArrayList<ArrayList<ObjetJeu>> gestionChantier(ArrayList<ArrayList<ObjetJeu>> banque, Player p, LinkedList<Case> grilleDeJeu, int defense) {
 			
 			HotelDeVille hdv = new HotelDeVille("L", 13);
-			int stockePlanche = HotelDeVille.getBanque().get(0).size();
-			int stockeMetal = HotelDeVille.getBanque().get(1).size();
+			int stockePlanche = banque.get(0).size();
+			int stockeMetal = banque.get(1).size();
 			
 			Scanner sc = new Scanner(System.in);
 			System.out.println("Que voulez-vous contruire/finir?" + "						Les resourses actuelles sont de " + stockePlanche + " planches et " + stockeMetal + " métals.\n"
@@ -260,20 +260,21 @@ public class GestionChantier/* extends HotelDeVille*/{
 			switch (code)
 			{
 			case 1 :
-				System.out.println("ICICICICICIICIICI " + getMurPlanche());
+				System.out.println(getMurPlanche());
 				if (getMurPlanche() != -1 && getMurMetal() != -1 && banque.get(0).size() >= 20 && banque.get(1).size() >= 5) { // Alors je peux construire mon mur
 					System.out.println("Vous venez d'utiliser 20 planches et 5 métals pour la réalisation du mur!");
-					// ERREUR ICI
+
 					setMurPlanche(-1);
-					setMurMetal(-1);					
+					setMurMetal(-1);			
+					
+					System.out.println(getMurPlanche());
 					
 					for (int i = 0; i < 20; i++) {
-						HotelDeVille.getBanque().get(0).remove(0);
+						banque.get(0).remove(0);
 					}
-					//System.out.println("TAILLE PLANCHES " + HotelDeVille.getBanque().get(0).size());
                                         
 					for (int i = 0; i < 5; i++) {
-						HotelDeVille.getBanque().get(1).remove(0);
+						banque.get(1).remove(0);
 					}
 					
 					if (p.getPa()>0) {
@@ -318,14 +319,21 @@ public class GestionChantier/* extends HotelDeVille*/{
 					}
 				}
 				
-				hdv.actionDansLaVille(p, grilleDeJeu);
-				
 				break;
 			case 2 :
 				if (getFilPlanche() != -1 && getFilMetal() != -1 && banque.get(0).size() >= 20 && banque.get(1).size() >= 30) { // Alors je peux construire mes fils
 					System.out.println("Vous venez d'utiliser 20 planches et 30 métals pour la réalisation des fils barbelés!");
+					
 					setFilPlanche(-1);
-					setFilMetal(-1);
+					setFilMetal(-1);	
+					
+					for (int i = 0; i < 20; i++) {
+						banque.get(0).remove(0);
+					}
+                                        
+					for (int i = 0; i < 30; i++) {
+						banque.get(1).remove(0);
+					}
 					
 					if (p.getPa()>0) {
 						int nbPa = -1;
@@ -336,15 +344,7 @@ public class GestionChantier/* extends HotelDeVille*/{
 						}
 						p.setPa(p.getPa() - nbPa);
 						setFilPA(getFilPA() - nbPa);
-										
-						for (int i = 0; i < 20; i++) {
-							banque.get(0).remove(0);
-						}
-	                                        
-						for (int i = 0; i < 30; i++) {
-							banque.get(1).remove(0);
-						}
-						
+														
 						System.out.println("Vous venez de lancer la construction des fils barbelés! Encore " + getFilPA() + " PA pour les finir!");
 					}
 					
@@ -375,15 +375,22 @@ public class GestionChantier/* extends HotelDeVille*/{
 						System.out.println("Déjà Construit!");	
 					}
 				}
-				
-				hdv.actionDansLaVille(p, grilleDeJeu);
 						
 				break;
 			case 3 :
 				if (getFossePlanche() != -1 && getFosseMetal() != -1 && banque.get(0).size() >= 50 && banque.get(1).size() >= 25) { // Alors je peux construire ma fosse a zombies
 					System.out.println("Vous venez d'utiliser 50 planches et 25 métals pour la réalisation d'une fosse à zombies!");
+					
 					setFossePlanche(-1);
 					setFosseMetal(-1);
+					
+					for (int i = 0; i < 50; i++) {
+						banque.get(0).remove(0);
+					}
+				                        
+					for (int i = 0; i < 25; i++) {
+						banque.get(1).remove(0);
+					}
 					
 					if (p.getPa()>0) {
 						int nbPa = -1;
@@ -394,14 +401,6 @@ public class GestionChantier/* extends HotelDeVille*/{
 						}
 						p.setPa(p.getPa() - nbPa);
 						setFossePA(getFossePA() - nbPa);
-										
-						for (int i = 0; i < 50; i++) {
-							banque.get(0).remove(0);
-						}
-	                                        
-						for (int i = 0; i < 25; i++) {
-							banque.get(1).remove(0);
-						}
 						
 						System.out.println("Vous venez de lancer la construction de la fosse à zombies! Encore " + getFossePA() + " PA pour les finir!");
 					}
@@ -433,15 +432,22 @@ public class GestionChantier/* extends HotelDeVille*/{
 						System.out.println("Déjà Construit!");	
 					}
 				}
-				
-				hdv.actionDansLaVille(p, grilleDeJeu);
 						
 				break;
 			case 4 :
 				if (getMinePlanche() != -1 && getMineMetal() != -1 && banque.get(0).size() >= 10 && banque.get(1).size() >= 50) { // Alors je peux construire mes mines
 					System.out.println("Vous venez d'utiliser 10 planches et 50 métals pour la réalisation des mines autour de la ville!");
+					
 					setMinePlanche(-1);
 					setMineMetal(-1);
+					
+					for (int i = 0; i < 10; i++) {
+						banque.get(0).remove(0);
+					}
+                                        
+					for (int i = 0; i < 50; i++) {
+						banque.get(1).remove(0);
+					}
 					
 					if (p.getPa()>0) {
 						int nbPa = -1;
@@ -452,14 +458,6 @@ public class GestionChantier/* extends HotelDeVille*/{
 						}
 						p.setPa(p.getPa() - nbPa);
 						setMinePA(getMinePA() - nbPa);
-										
-						for (int i = 0; i < 10; i++) {
-							banque.get(0).remove(0);
-						}
-	                                        
-						for (int i = 0; i < 50; i++) {
-							banque.get(1).remove(0);
-						}
 						
 						System.out.println("Vous venez de lancer la construction des mines autour de la ville! Encore " + getMinePA() + " PA pour les finir!");
 					}
@@ -490,16 +488,23 @@ public class GestionChantier/* extends HotelDeVille*/{
 					} else {
 						System.out.println("Déjà Construit!");	
 					}
-				}
-				
-				hdv.actionDansLaVille(p, grilleDeJeu);
-						
+				}						
 				break;
+				
 			case 5 :
 				if (getPortePlanche() != -1 && getPorteMetal() != -1 && banque.get(0).size() >= 50 && banque.get(1).size() >= 50) { // Alors je peux construire mes portes blindées
 					System.out.println("Vous venez d'utiliser 50 planches et 50 métals pour la réalisation des portes blindées!");
+					
 					setPortePlanche(-1);
 					setPorteMetal(-1);
+					
+					for (int i = 0; i < 50; i++) {
+						banque.get(0).remove(0);
+					}
+                                       
+					for (int i = 0; i < 50; i++) {
+						banque.get(1).remove(0);
+					}
 					
 					if (p.getPa()>0) {
 						int nbPa = -1;
@@ -510,14 +515,6 @@ public class GestionChantier/* extends HotelDeVille*/{
 						}
 						p.setPa(p.getPa() - nbPa);
 						setPortePA(getPortePA() - nbPa);
-										
-						for (int i = 0; i < 50; i++) {
-							banque.get(0).remove(0);
-						}
-	                                       
-						for (int i = 0; i < 50; i++) {
-							banque.get(1).remove(0);
-						}
 						
 						System.out.println("Vous venez de lancer la construction des portes blindées! Encore " + getPortePA() + " PA pour les finir!");
 					}
@@ -549,15 +546,22 @@ public class GestionChantier/* extends HotelDeVille*/{
 						System.out.println("Déjà Construit!");	
 					}
 				}
-				
-				hdv.actionDansLaVille(p, grilleDeJeu);
-						
 				break;
+				
 			case 6 :
 				if (getMiradorPlanche() != -1 && getMiradorMetal() != -1 && banque.get(0).size() >= 75 && banque.get(1).size() >= 75) { // Alors je peux construire mes miradors
 					System.out.println("Vous venez d'utiliser 75 planches et 75 métals pour la réalisation des miradors avec mitrailleuses automatiques!");
+					
 					setMiradorPlanche(-1);
 					setMiradorMetal(-1);
+					
+					for (int i = 0; i < 75; i++) {
+						banque.get(0).remove(0);
+					}
+                                      
+					for (int i = 0; i < 75; i++) {
+						banque.get(1).remove(0);
+					}
 					
 					if (p.getPa()>0) {
 						int nbPa = -1;
@@ -568,14 +572,6 @@ public class GestionChantier/* extends HotelDeVille*/{
 						}
 						p.setPa(p.getPa() - nbPa);
 						setMiradorPA(getMiradorPA() - nbPa);
-										
-						for (int i = 0; i < 75; i++) {
-							banque.get(0).remove(0);
-						}
-	                                      
-						for (int i = 0; i < 75; i++) {
-							banque.get(1).remove(0);
-						}
 						
 						System.out.println("Vous venez de lancer la construction des miradors! Encore " + getMiradorPA() + " PA pour les finir!");
 					}
@@ -607,16 +603,22 @@ public class GestionChantier/* extends HotelDeVille*/{
 						System.out.println("Déjà Construit!");	
 					}
 				}
-				
-				hdv.actionDansLaVille(p, grilleDeJeu);
-						
 				break;
 				
 			case 7 :
 				if (getAbrisPlanche() != -1 && getAbrisMetal() != -1 && banque.get(0).size() >= 100 && banque.get(1).size() >= 200) { // Alors je peux construire mes abris anti-atomique
 					System.out.println("Vous venez d'utiliser 100 planches et 200 métals pour la réalisation des abris anti-atomique!");
+					
 					setAbrisPlanche(-1);
 					setAbrisMetal(-1);
+					
+					for (int i = 0; i < 100; i++) {
+						banque.get(0).remove(0);
+					}
+                                        
+					for (int i = 0; i < 200; i++) {
+						banque.get(1).remove(0);
+					}
 					
 					if (p.getPa()>0) {
 						int nbPa = -1;
@@ -627,14 +629,6 @@ public class GestionChantier/* extends HotelDeVille*/{
 						}
 						p.setPa(p.getPa() - nbPa);
 						setAbrisPA(getAbrisPA() - nbPa);
-										
-						for (int i = 0; i < 100; i++) {
-							banque.get(0).remove(0);
-						}
-	                                        
-						for (int i = 0; i < 200; i++) {
-							banque.get(1).remove(0);
-						}
 						
 						System.out.println("Vous venez de lancer la construction des abris anti-atomique! Encore " + getAbrisPA() + " PA pour les finir!");
 					}
@@ -666,15 +660,12 @@ public class GestionChantier/* extends HotelDeVille*/{
 						System.out.println("Déjà Construit!");	
 					}
 				}
-				
-				hdv.actionDansLaVille(p, grilleDeJeu);
-						
 				break;
 				
-			case 9 :				
-				hdv.actionDansLaVille(p, grilleDeJeu);
+			case 9 :
 				break;
 				
 			}
+		return banque;
 	}
 }

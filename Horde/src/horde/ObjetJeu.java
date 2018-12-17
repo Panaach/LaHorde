@@ -11,6 +11,8 @@ public class ObjetJeu {
 			return 2;
 		else if (String.valueOf(obj.getClass()).equals("class horde.Gourde")) // si mon objet est une gourde je renvoie le code 2
 			return 3;
+		else if (String.valueOf(obj.getClass()).equals("class horde.Boisson")) // si mon objet est une boisson énergisante je renvoie le code 4
+			return 4;
 		else
 			return -1;
 	}
