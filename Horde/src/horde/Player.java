@@ -306,6 +306,7 @@ public class Player {
 		Scanner sc = new Scanner(System.in);
 		// si le joueur n'est pas en ville alors il peut tuer ou fouiller des cases
 		int code = -1;
+		System.out.println("Porte ouverte : " + hdv.isGrandePorte());
 		if (!hdv.enVille(p)) {
 			// case où est la joueur
 			int nb = Grille.numeroCaseDansLaListe(p.getAbscisse(), p.getOrdonne());
@@ -314,32 +315,36 @@ public class Player {
 			// nb de zombies dans la case
 			System.out.println("\n" + caseAct.getNbZombies() + " zombies dans cette case!" );
 			
+			// si la case est découverte alors j'affiche au joueurs ses carctéristiques
 			if (caseAct.isAffCase()) {
-					if (caseAct.getNbPlanche() != 0 || caseAct.getNbMetal() != 0 || caseAct.hasBoisson()) {
+				if (caseAct.getNbPlanche() != 0 || caseAct.getNbMetal() != 0 || caseAct.hasBoisson()) {
+				
+					// annonce ce que le joueur a trouvé
+					System.out.println("\nVous avez trouvé :\n" + caseAct.getNbPlanche() + " planches\n"
+							+ caseAct.getNbMetal() + " métals\n");
 					
-						// annonce ce que le joueur a trouvé
-						System.out.println("\nVous avez trouvé :\n" + caseAct.getNbPlanche() + " planches\n"
-								+ caseAct.getNbMetal() + " métals\n");
-						
-						if (caseAct.hasBoisson()) {
-							System.out.println("1 boisson énergisante");
-						} else {
-							System.out.println("0 boisson énergisante");
-						}
+					if (caseAct.hasBoisson()) {
+						System.out.println("1 boisson énergisante");
 					} else {
-						System.out.println("\nIl n'y a rien dans cette case!");
+						System.out.println("0 boisson énergisante");
 					}
+				} else {
+					System.out.println("\nIl n'y a rien dans cette case!");
+				}
 			}
-			
+				
+			// action Posible dans la case
 			System.out.println("Que voulez-vous faire dans cette case?\n"
 					+ "Fouiller la case : 0\n"
 					+ "Utiliser un objet dans le sac : 1\n"
 					+ "Tuer un zombie : 2\n"
-					+ "Utiliser le talkie-walkie : 3\n"
-					+ "Ne rien faire : 9");
+					+ "Afficher le talkie-walkie : 3\n"
+					+ "Ne rien faire : 4\n"
+					+ "Passer son tour : 9");
 			
 			code = sc.nextInt();
-
+			boolean passerSonTour = false;
+			
 			switch (code)
 			{
 			case 0 : // FOUILLER UNE CASE
@@ -347,7 +352,7 @@ public class Player {
 					p.fouiller(p, grilleDeJeu); 
 				break;
 			case 1 : // UTILISER UN OBJET DANS LE SAC
-				utiliserUnObjet(p);
+				utiliserUnObjet(p, grilleDeJeu, grilleCase);
 				break;
 			case 2 :// TUER UN ZOMBIE
 				p.tuerUnZombie(p, grilleDeJeu);
@@ -358,35 +363,28 @@ public class Player {
 				Talkie t = new Talkie();
 				t.afficheMap(grilleCase);
 				actionPossibleDuJoeur(p, grilleDeJeu, grilleCase);
+				break;
+			case 4 :
+				break;
 				
 			case 9 : // NE RIEN FAIRE
+				passerSonTour = true;
 				break;
 			}
 
-			// S'il y a trop de zombies dans la case le joueur ne peut plus se déplacer 
-			// TODO IL PERDS DES PV OU UN TRUC DU GENRE A RAJOUTER !!!
-			if (caseAct.getNbZombies()>p.getPa()) {
-				code = 0;
-				while (code == 0) {
-					System.out.println("\nTrop de zombies vous ne pouvez plus vous déplacer!\n"
-							+ "Voulez-vous tuer un zombie?\n"
-							+ "Tuer un zombie : 0 \n"
-							+ "Ne rien faire : 1");
-					code = sc.nextInt();
-					
-					if (code == 0)
-						p.tuerUnZombie(p, grilleDeJeu);
-					else
-						break;
-				}
+			// tu veux bouger de la case mais trop de zombie alors tu ne peux pas partir (tu ne peux que passer au joueur suivant)
+			if (caseAct.getNbZombies()>p.getPa() && !passerSonTour) {
+				System.out.println("Trop de zombies dans la case vous ne pouvez plus vous déplacer! Vous êtes bloqué dans cette case!");
+				actionPossibleDuJoeur(p, grilleDeJeu, grilleCase);
 			}
-
+			
 		} else { // sinon je suis en ville (je regarde si la porte est ouverte) si oui alors je peut effectuer des actions en ville
 			if (HotelDeVille.isGrandePorte() == true) {
 				hdv.actionDansLaVille(p, grilleDeJeu, grilleCase);
 			} else {
-				System.out.println("La porte est fermée, shit happens!");
-			}
+				System.out.println("\nLa porte est fermée, shit happens!");
+				hdv.actionDehors(p, grilleDeJeu, grilleCase);
+			}					
 		}
 	}
 	
@@ -411,11 +409,14 @@ public class Player {
 		}
 	}
 	
-	public void utiliserUnObjet(Player p) {
+	public void utiliserUnObjet(Player p, LinkedList<Case> grilleDeJeu, Case[][] grilleCase) {
 		if (!p.getSac().isEmpty()) { // sac non vide
 			Scanner sc = new Scanner(System.in);
-			p.getSac().forEach((temp) -> {
-				// ObjetJeu objet = temp;					
+			//p.getSac().forEach((temp) -> {
+			
+			for (int i = 0; i < p.getSac().size(); i++) {
+				ObjetJeu temp = p.getSac().get(i);	
+					 
 				if (ObjetJeu.getId(temp) == 3) { // POUR UTILISER UNE GOURDE
 					System.out.println("Voulez-vous utiliser votre gourde?\n"
 							+ "Utiliser : 0\n"
@@ -429,13 +430,19 @@ public class Player {
 								p.setPa(6);
 								p.setConsommeGourde(true);
 								System.out.println("Gourde utilisé!");
+								
+								// si le joueur est en ville je le renvoie en ville sinon dehors
+								if (hdv.enVille(p))
+									hdv.actionDansLaVille(p, grilleDeJeu, grilleCase);
+								else 
+									hdv.actionDehors(p, grilleDeJeu, grilleCase);
+								
 							} else {
 								p.setConsommeGourde(false);
 							}
 						} else
 							System.out.println("Vous avez déjà utiliser une gourde aujourd'hui!");
 					} 
-					return;
 				} 
 				
 				if (ObjetJeu.getId(temp) == 2) { // POUR UTILISER UNE RATION
@@ -450,10 +457,16 @@ public class Player {
 							p.getSac().remove(new Ration());
 							p.setPa(6);
 							System.out.println("Ration utilisé!");
+							
+							// si le joueur est en ville je le renvoie en ville sinon dehors
+							if (hdv.enVille(p))
+								hdv.actionDansLaVille(p, grilleDeJeu, grilleCase);
+							else 
+								hdv.actionDehors(p, grilleDeJeu, grilleCase);
+							
 						} else
 							System.out.println("Vous avez déjà utiliser une ration aujourd'hui!");
 					}
-					return; 
 				} 
 				
 				if (ObjetJeu.getId(temp) == 4) {
@@ -472,14 +485,19 @@ public class Player {
 						p.setPa(p.getPa() + 3);
 						p.setTourBoisson(0);
 						
+						// il ne peut pas avoir plus de si PA 
 						if (p.getPa() > 6)
 							p.setPa(6);
-						return;
+						
+						// si le joueur est en ville je le renvoie en ville sinon dehors
+						if (hdv.enVille(p))
+							hdv.actionDansLaVille(p, grilleDeJeu, grilleCase);
+						else 
+							hdv.actionDehors(p, grilleDeJeu, grilleCase);
 					}
-				} /*else
-					System.out.println("Aucun objet à utiliser!");*/
-				//return; // sinon je vais tout le temps demander s'il veut utiliser un objet dans son sac
-			});
+				}			
+			} // fin pour
+			
 		} else 
 			System.out.println("Votre sac est vide!");
 	}

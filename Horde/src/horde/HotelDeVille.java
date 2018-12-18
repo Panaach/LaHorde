@@ -72,6 +72,7 @@ public class HotelDeVille extends Case{
 				+ "Aller au puit : 3\n"
 				+ "Utiliser un objet : 4\n"
 				+ "Aller au chantier : 5\n"
+				+ "Fermer la porte : 6\n"
 				+ "Passer son tour : 9");
 
 		code = sc.nextInt();	
@@ -121,42 +122,20 @@ public class HotelDeVille extends Case{
 				case 0 :
 					System.out.println("\nSac du joeuur" + p.getSac().size());
 					if (!p.getSac().isEmpty()) {
-						
-						for (int i = 0; i < p.getSac().size(); i++) {
+
+						int i = 0;
+						while(i != p.getSac().size()) {
+							// objet a la position i
 							ObjetJeu temp = p.getSac().get(i);
 							
 							if (ObjetJeu.getId(temp) != 3 && ObjetJeu.getId(temp) != 4) {// si ce n'est pas une boisson / une gourde alors
 								getBanque().get(ObjetJeu.getId(temp)).add(temp);
-							}
-							
-							p.getSac().remove(i);
+								//System.out.println("Banque " + getBanque().get(ObjetJeu.getId(temp)).size() + "\n");
+								p.getSac().remove(i);
+							} else {
+								i += 1;								
+							}							
 						}
-
-						System.out.println("\nSac du joeuur" + p.getSac().size());
-						/*p.getSac().forEach((temp) -> {
-							
-							// ObjetJeu objet = temp;
-							// getId obtient le numéro (0 pl, 1 met, 2 ration, 3 gourde) du "tableau"  en fonction de l'objet
-							// j'ajoute donc l'objet dans le tableau correspondant
-							if (ObjetJeu.getId(temp) != 3 && ObjetJeu.getId(temp) != 4) {// si ce n'est pas une boisson / une gourde alors
-								getBanque().get(ObjetJeu.getId(temp)).add(temp);
-					 //tb de la banque          num du tb		      ajout de l'objet
-								p.getSac().remove(temp);
-								
-							} else if (ObjetJeu.getId(temp) == 2) {
-								Scanner ok = new Scanner(System.in);
-								System.out.println("Voulez-vous stocker la ration?\n"
-										+ "Oui : 1\n"
-										+ "Non : 2");
-								int reponse = ok.nextInt();
-								
-								if (reponse == 1) {
-									getBanque().get(ObjetJeu.getId(temp)).add(temp);
-									p.getSac().remove(temp);									
-								}
-							}
-							 
-						});*/
 						
 					} else 
 						System.out.println("Votre sac est vide!");
@@ -170,7 +149,7 @@ public class HotelDeVille extends Case{
 					if (getBanque().get(2).size()>0) {  
 						if (p.getSac().size() < 10) {
 							p.getSac().add(new Ration());
-							getBanque().get(2).remove(new Ration());
+							getBanque().get(2).remove(0);
 							System.out.println("Ration obtenue!");
 						} else 
 							System.out.println("Vous n'avez pas de place dans votre sac pour une ration!");
@@ -223,16 +202,29 @@ public class HotelDeVille extends Case{
 			
 		case 4 : // UTILISER UN OBJET
 			//System.out.println("TEST");
-			p.utiliserUnObjet(p);
+			p.utiliserUnObjet(p, grilleDeJeu, grilleCase);
 			actionDansLaVille(p, grilleDeJeu, grilleCase);
 			break;
 			
 		case 5 : // CHANTIER
+			//System.out.println("Planche !!!!!!!!!!!!!!! " + getBanque().get(0));
 			setBanque(gestion.gestionChantier(getBanque(), p, grilleDeJeu, defense));
 			actionDansLaVille(p, grilleDeJeu, grilleCase);
 			
 			break;
 			
+		case 6 :
+			if (isGrandePorte()) {
+				if (p.getPa() > 0) {
+					System.out.println("Fermeture de la porte!");
+					setGrandePorte(false);
+				} else
+					System.out.println("Vous ne possédez pas assez de PA pour cette fermeture!");
+			} else {
+				System.out.println("Porte déjà fermée!");
+			}
+			actionDansLaVille(p, grilleDeJeu, grilleCase);
+			break;
 		case 9 :
 			System.out.println("Tour passé!");
 			break;			
@@ -243,7 +235,7 @@ public class HotelDeVille extends Case{
 		int code = -1;
 		
 
-		System.out.println("\nPSEUDO DU SAC " + p.getSac().size());
+		//System.out.println("\nPSEUDO DU SAC " + p.getSac().size());
 		
 		// Case dans laquelle se trouve le joueur
 		//Case caseAct = grilleDeJeu.get(Grille.numeroCaseDansLaListe(p.getAbscisse(), p.getOrdonne()));
@@ -292,7 +284,7 @@ public class HotelDeVille extends Case{
 				p.actionPossibleDuJoeur(p, grilleDeJeu, grilleCase);
 				break;
 			case 4 :
-				p.utiliserUnObjet(p);
+				p.utiliserUnObjet(p, grilleDeJeu, grilleCase);
 				break;
 			case 5 :
 				System.out.println("\nVoici la map à ce tour :");

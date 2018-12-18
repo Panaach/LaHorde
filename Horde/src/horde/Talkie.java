@@ -39,7 +39,7 @@ public class Talkie {
 			for (int j = 0; j < 25; j++) {
 				if (k == 12 && j == 11) {
 					System.out.print("|   VILLE  ");
-				} else if (!grille[k][j].isAffCase()) {
+				} else if (grille[k][j].isAffCase()) {
 					int test;
 					if (grille[k][j].hasBoisson())
 						test = 1;

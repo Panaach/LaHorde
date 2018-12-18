@@ -84,10 +84,10 @@ public class TableDeJeu {
 		
 		// Cheat
 		int numCase = Grille.numeroCaseDansLaListe("M", 13);
-		for (int j = 0; j<540; j++) {
+		/*for (int j = 0; j<540; j++) {
 			hdv.getBanque().get(0).add(new Planche());
 			hdv.getBanque().get(1).add(new Metal());					
-		}
+		}*/
 		//listPlayer.get(0).setPa(6150);
 		grilleDeJeu.get(numCase).setNbPlanche(5);
 		grilleDeJeu.get(numCase).setNbMetal(5);
@@ -97,7 +97,8 @@ public class TableDeJeu {
 		listPlayer.get(0).setPv(10);
 		listPlayer.get(0).getSac().add(new Planche());
 		listPlayer.get(0).getSac().add(new Metal());
-		listPlayer.get(0).getSac().add(new Boisson());
+		listPlayer.get(0).getSac().add(new Ration());
+		listPlayer.get(0).getSac().add(new Ration());
 		//****************************************************
 		
 		Talkie t = new Talkie();
