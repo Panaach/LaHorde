@@ -30,6 +30,8 @@ public class Grille {
 	public LinkedList<Case> createGrille() {
 		int nbPlanches = 1000;
 		int nbMetals = 500;		
+		int nbBoisson = 100;
+		
 		ArrayList<Integer> tabZombies = tabZombies();
 		
 		for (int i = 0; i < 25; i++) { // Abscisse LETTRE
@@ -39,7 +41,7 @@ public class Grille {
 				if (i == 12 && j == 13)
 					grille.add(new HotelDeVille(String.valueOf(absAlphabet.values()[i]), j));
 				else				
-					grille.add(new Case(String.valueOf(absAlphabet.values()[i]), j, tabZombies.get(nbRandomZombies), 0, 0));
+					grille.add(new Case(String.valueOf(absAlphabet.values()[i]), j, tabZombies.get(nbRandomZombies), 0, 0, false, false));
 			}
 		}
 		
@@ -80,17 +82,36 @@ public class Grille {
 			//System.out.println("met "+ nbMetals);
 		}
 		
+		while (nbBoisson > 0) {
+			int nbRandomCase = (int) (Math.random() * grille.size());
+			
+			while(nbRandomCase == grille.size()/2 || grille.get(nbRandomCase).hasBoisson()) {
+				nbRandomCase = (int) (Math.random() * grille.size());
+			}
+			
+			grille.get(nbRandomCase).setBoisson(true);;
+
+			nbBoisson -= 1;
+			
+		}
+		
 		return grille;
 	}
 	
 	public static int numeroCaseDansLaListe(String abs, int ord) {
-		int numero = 0, i = 0;
-		while (String.valueOf(absAlphabet.values()[i]).equals(abs)) {
-			numero+=25;
-			i+=1;
+		int ordonne = 0, abscisse = 0;
+		while (!String.valueOf(absAlphabet.values()[abscisse]).equals(abs)) {
+			abscisse+=1;
 		}
-		numero += ord;
-		return numero;
+		
+		int test = 1;
+		while (ord != test) {
+			ordonne+=25;
+			test += 1;
+		}
+		
+		ordonne += abscisse;
+		return ordonne;
 	}
 	
 	public void affiche(LinkedList<Case> grille) {
